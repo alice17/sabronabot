@@ -88,8 +88,8 @@ class WebhookHandler(webapp2.RequestHandler):
         #message = body['message']
         #query = body['inline_query']
         if 'message' in body:
-        # messaggio
-            bmessage = body['message'] #estrae bmessage (body message)
+        # message
+            bmessage = body['message'] 
             message_id = bmessage.get('message_id')
             date = bmessage.get('date')
             text = bmessage.get('text')
@@ -109,7 +109,6 @@ class WebhookHandler(webapp2.RequestHandler):
         #### FUNCTIONS #####
         
         def reply(msg=None, img=None, imgid=None, sticker=None, voice=None, video=None, venue=None, document=None):    
-        # risposta
             if msg:
                 resp = urllib2.urlopen(BASE_URL + 'sendMessage', urllib.urlencode({
                     'chat_id': str(chat_id),
@@ -233,7 +232,7 @@ class WebhookHandler(webapp2.RequestHandler):
             else:
                 textAdmin(resp_dump.encode('utf-8'))
             
-        ###### ELABORAZIONE MESSAGGI #####    
+        ###### MESSAGGE ELABORATION #####    
         
         try:
             if text and text.startswith('/'):
@@ -245,14 +244,13 @@ class WebhookHandler(webapp2.RequestHandler):
                     reply('Andrò nel lettone a farmi un ponsino.')
                     setEnabled(chat_id, False)
                 elif text.startswith('/broadcastimg'):
-                    # invia messaggio broadcast con immagine specificata nell'url
+                    # sends broadcast image with url specified after the command
                     broadcast(img=urllib2.urlopen(text[13:]).read()) 
                 elif text.startswith('/broadcast '):
-                    # invia messaggio broadcast
+                    # sends broadcast message
                     broadcast(msg=text[10:])
                 elif getEnabled(chat_id):
                     if text == '/manzi' or text == '/manzi@Sabronabot':
-                    # manda foto di manzi
                         #nomefile = BERTHA_URL + 'manzi/manzi' + str(random.randint(1,12)) + '.jpg'
                         #reply(img=urllib2.urlopen(nomefile).read())
                         
@@ -265,7 +263,6 @@ class WebhookHandler(webapp2.RequestHandler):
                                 ]
                         reply(imgid=(random.choice(manzi)))
                     elif text == '/gnagnette' or text == '/gnagnette@Sabronabot':
-                    # manda foto di gnagnette
                         gnagnette = ['AgADAgADhrExGzwSyQIlczHRUDnLvmzthSoABIEKwrR4Jg7T5aoAAgI',
                                 'AgADAgADh7ExGzwSyQKgKR2hU3FS0fXHgioABKwMZzYKY-tlXXsBAAEC',
                                 'AgADAgADiLExGzwSyQKjQKnl8pRImjvXgioABDMvKdeZhNB0oX0BAAEC',
@@ -283,7 +280,6 @@ class WebhookHandler(webapp2.RequestHandler):
                                 ]
                         reply(imgid=(random.choice(gnagnette)))
                     elif text == '/cibo' or text == '/cibo@Sabronabot':
-                    # manda foto di delizie
                         cibo = ['AgADAgADsbIxGzwSyQK4mwONzrJsA_PqhSoABLxCxOsLqc3ClNoBAAEC',
                                 'AgADAgADsrIxGzwSyQLV8Fcoh57nwzTLRw0ABOOjNgABy-M9_KNeAAIC',
                                 'AgADAgADs7IxGzwSyQLI77mJYqnNgdogSA0ABCbA8S71xjkcwlsAAgI',
@@ -307,7 +303,6 @@ class WebhookHandler(webapp2.RequestHandler):
                                 ]
                         reply(imgid=(random.choice(cibo)))
                     elif text == '/citazionibertesche' or text == '/citazionibertesche@Sabronabot':
-                    # citazioni bertha
                         frasi = ['\"Voglio il lettone!!\"', 
                                 '\"È gnagnetta!\"', 
                                 '\"Edooo! La mia vuitton!!\"', 
@@ -330,7 +325,6 @@ class WebhookHandler(webapp2.RequestHandler):
                         reply('Num chat: ' + str(count))
                         
             elif text and getEnabled(chat_id):
-                # elabora testo dei messaggi con chat enabled
                 if text:
                     nomedir = BERTHA_URL + 'words/'
                     #### TESTO ####
@@ -395,7 +389,7 @@ class WebhookHandler(webapp2.RequestHandler):
                         reply(sticker='BQADAgADBgEAAjwSyQJsbFZS-p0OLQI')
                     elif text.upper()=='ODELL':
                         reply(sticker='BQADAgADCQEAAjwSyQIEZFDzz8JvmAI')
-                    #### IMMAGINI ####
+                    #### IMAGES ####
                     elif re.search(r'\b(AMORE|LOVE)\b' ,text.upper()):
                         reply(imgid='AgADBAADC7AxGwZG_gT_TD3RXz3tAAEVMykZAATUh2tOX17G3aCVAAIC')
                     elif re.search(r'\b(MADRE|MOTHER)\b' ,text.upper()):
@@ -470,24 +464,21 @@ class WebhookHandler(webapp2.RequestHandler):
                         reply(voice='AwADAgADUQMAAjwSyQLygx336d7oMwI')
                     #elif 'VETRINA' re.search(r'\b\b' ,text.upper()):
                     #    reply(voice='BQADAgAD4AEAAjwSyQIMz1uOE1DzsQI')
-            ##### EVENTI #####
+            ##### EVENTS #####
             elif 'message' in body and 'new_chat_member' in bmessage and bmessage.get('new_chat_member').get('username')!='Sabronabot':
-                # nuovo membro nella chat
                 reply('Ecco un altro rompicoglioni')
             elif 'message' in body and 'new_chat_member' in bmessage and bmessage.get('new_chat_member').get('username')=='Sabronabot':
-                # sabrona aggiunta ad una chat
+                # sabrona added to a chat
                 reply('Ciao. Io sono la Sabrona e adesso vi rompo il culo. \xf0\x9f\x98\x8e') 
                 setEnabled(chat_id, True)
                 textAdmin('Aggiunta alla chat ' + str(chat_id))
                 getChatInfo(adminId, chat_id, True)
             elif 'message' in body and ('left_chat_member' in bmessage and bmessage.get('left_chat_member').get('username') != 'Sabronabot'):
-                # membro lascia chat
                 reply('A mai più rivederci.')
             elif 'message' in body and ('left_chat_member' in bmessage and bmessage.get('left_chat_member').get('username') == 'Sabronabot'):
-                # sabrona eliminata dalla chat 
                 deleteChatId(chat_id)
                 textAdmin('Eliminata dalla chat ' + str(chat_id))
-                # getChatInfo(adminId, chat_id)   --> NON POSSO :(  IMPORTANTE
+                # getChatInfo(adminId, chat_id)   
             elif 'message' in body and 'location' in bmessage:
                 reply('Ci sono stata in quel posto e fa cagare.')    
         except urllib2.HTTPError, err:
